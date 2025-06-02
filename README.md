@@ -68,3 +68,9 @@ In Visual Studio:
 Press F5 or click the green Run button to start the app,
 The default page should open in your browser (e.g., https://localhost:5001).
 
+Dashboard : ![Image](https://github.com/user-attachments/assets/bbdfe1d9-6e97-4aac-8947-e9800b1a30bc)
+Login: ![Image](https://github.com/user-attachments/assets/fae59989-18d3-483d-8530-c02f3af62d8f)
+Register: ![Image](https://github.com/user-attachments/assets/db05ae2c-a279-414c-b030-f73bce4e680c)
+My Task : ![Image](https://github.com/user-attachments/assets/9b91f50b-cc03-4553-8e27-a66c68a8b14b)
+Add New Task : ![Image](https://github.com/user-attachments/assets/6ae18ca5-899e-4677-b8ba-c62006d56bdd)
+
