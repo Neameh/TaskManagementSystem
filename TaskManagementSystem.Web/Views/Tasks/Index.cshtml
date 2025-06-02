@@ -1,0 +1,105 @@
+﻿@model IEnumerable<TaskManagementSystem.Web.Models.TaskItem>
+@{
+    ViewData["Title"] = "My Tasks";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12 col-md-10 col-lg-8 mx-auto">
+            <h2 class="mb-3">My Tasks</h2>
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
+                <a class="btn btn-primary mb-2" asp-action="Create">Add New Task</a>
+            </div>
+            <form method="get" asp-action="Index" asp-controller="Tasks" class="mb-3 d-flex gap-2 align-items-center">
+                <label class="form-label mb-0">Filter:</label>
+                <select name="filter" class="form-select w-auto" onchange="this.form.submit()">
+                    <option value="all" selected="@(ViewBag.CurrentFilter == "all")">All</option>
+                    <option value="completed" selected="@(ViewBag.CurrentFilter == "completed")">Completed</option>
+                    <option value="incomplete" selected="@(ViewBag.CurrentFilter == "incomplete")">Incomplete</option>
+                </select>
+
+                <label class="form-label mb-0">Search:</label>
+                <input type="text" name="search" value="@ViewBag.Search" class="form-control" placeholder="Search by title or description" oninput="delayedSubmit(this.form)" />
+
+            </form>
+
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Title</th>
+                            <th class="d-none d-md-table-cell">Description</th>
+                            <th>Created</th>
+                            <th class="d-none d-md-table-cell">Category</th>
+                            <th>Status</th>
+                            <th>Due Date</th>
+                            <th style="min-width:130px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Title</td>
+                                <td class="d-none d-md-table-cell">@item.Description</td>
+                                <td>@item.CreatedAt.ToLocalTime().ToString("g")</td>
+                                <td class="d-none d-md-table-cell">@item.Category</td>
+                                <td>
+                                    @if (item.IsCompleted)
+                                    {
+                                        <span class="badge bg-success">Completed</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning text-dark">Pending</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (item.DueDate.HasValue)
+                                    {
+                                        if (!item.IsCompleted && item.DueDate < DateTime.UtcNow)
+                                        {
+                                            <span class="badge bg-danger">Overdue (@item.DueDate.Value.ToShortDateString())</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-info text-dark">Due @item.DueDate.Value.ToShortDateString()</span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">No dueDate</span>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="d-flex flex-wrap gap-1">
+                                        <form asp-action="ToggleComplete" method="post" class="d-inline">
+                                            <input type="hidden" name="id" value="@item.Id" />
+                                            <button type="submit" class="btn btn-sm btn-outline-secondary">
+                                                @((item.IsCompleted ? "Mark Incomplete" : "Mark Complete"))
+                                            </button>
+                                        </form>
+                                        <a class="btn btn-sm btn-outline-info" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                                        <form asp-action="Delete" method="post" class="d-inline">
+                                            <input type="hidden" name="id" value="@item.Id" />
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure?');">Delete</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    let timeout;
+    function delayedSubmit(form) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+            form.submit();
+        }, 500);
+    }
+</script>

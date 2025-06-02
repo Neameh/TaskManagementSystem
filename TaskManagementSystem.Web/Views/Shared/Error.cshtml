@@ -1,0 +1,38 @@
+﻿@using TaskManagementSystem.Web.ViewModels
+
+@{
+    ViewData["Title"] = "Error";
+    var statusCode = Context.Request.Query["statusCode"].ToString();
+}
+
+<div class="text-center mt-5">
+    <h1 class="display-4 text-danger">Oops! An error occurred.</h1>
+
+    @if (statusCode == "404")
+    {
+        <p>The page you are looking for could not be found.</p>
+    }
+    else if (statusCode == "403")
+    {
+        <p>You are not authorized to access this resource.</p>
+    }
+    else
+    {
+        <p>@Model?.Message ?? "An unexpected error occurred."</p>
+    }
+
+    <div class="mt-4">
+        @if (statusCode == "403")
+        {
+            <a asp-controller="Account" asp-action="Login" class="btn btn-primary">Back to Login</a>
+        }
+        else if (User.Identity.IsAuthenticated)
+        {
+            <a asp-controller="Tasks" asp-action="Index" class="btn btn-primary">Back to Tasks</a>
+        }
+        else
+        {
+            <a asp-controller="Account" asp-action="Login" class="btn btn-primary">Back to Login</a>
+        }
+    </div>
+</div>
